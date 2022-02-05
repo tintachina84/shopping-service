@@ -33,6 +33,17 @@ public class MemberServiceTest {
         assertEquals(member.getRole(), member.getRole());
     }
 
+    @Test
+    @DisplayName("중복 회원 가입 테스트")
+    public void saveDuplicateMemberTest() {
+        Member member1 = createMember();
+        Member member2 = createMember();
+        this.memberService.saveMember(member1);
+
+        Throwable e = assertThrows(IllegalStateException.class, () -> {this.memberService.saveMember(member2);});
+        assertEquals("이미 가입된 회원입니다.", e.getMessage());
+    }
+
     private Member createMember() {
         return Member.builder()
                 .email("test@email.com")
