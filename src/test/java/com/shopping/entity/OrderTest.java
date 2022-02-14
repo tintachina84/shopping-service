@@ -3,6 +3,7 @@ package com.shopping.entity;
 import com.shopping.constant.ItemSellStatus;
 import com.shopping.repository.ItemRepository;
 import com.shopping.repository.MemberRepository;
+import com.shopping.repository.OrderItemRepository;
 import com.shopping.repository.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class OrderTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -64,6 +68,22 @@ public class OrderTest {
         Order order = this.createOrder();
         order.getOrderItems().remove(0); // order_item 테이블의 첫번째 컬럼을 지우는 delete문이 실행되는지 확인
         em.flush();
+    }
+
+    @Test
+    @DisplayName("지연 로딩 테스트")
+    public void lazyLoadingTest() {
+        Order order = this.createOrder();
+        Long orderItemId = order.getOrderItems().get(0).getId();
+        em.flush();
+        em.clear();
+
+        OrderItem orderItem = this.orderItemRepository.findById(orderItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        System.out.println("Order class : " + orderItem.getOrder().getClass()); // lazy 로딩을 할 시 proxy 객체로 생성됨
+        System.out.println("=============================");
+        System.out.println(orderItem.getOrder().getOrderDate());
+        System.out.println("=============================");
     }
 
     private Item createItem() {
