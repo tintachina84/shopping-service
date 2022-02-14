@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Order {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "order_id", nullable = false)
@@ -32,8 +32,4 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
 }

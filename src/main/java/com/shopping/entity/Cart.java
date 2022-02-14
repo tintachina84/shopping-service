@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-public class Cart {
+public class Cart extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "cart_id", nullable = false)
